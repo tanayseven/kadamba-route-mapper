@@ -60,7 +60,7 @@ def write_image(image: ndarray, image_path: str):
 
 def detect_text(image: Image) -> str:
     return pytesseract.image_to_string(
-        image, config='--psm 6'
+        image, config='--oem 3  --psm 6'
     )
 
 
@@ -73,11 +73,15 @@ def parse_detected_text(detected_text: str) -> list[list[str]]:
     count = 1
     for line in detected_text.splitlines():
         if line:
-            text = re.split(r' |{|\|', line)
+            text = re.split(r'[ {|_]', line)
             text = [word for word in text if word]
             if not has_numbers(text[0]):
                 continue
-            parsed_text.append([text[0], text[1], count])
+            kms = ''.join([letter for letter in text[0] if letter.isdigit()])
+            stage = text[1].strip()
+            if stage.isnumeric():
+                continue
+            parsed_text.append([kms, stage, count])
             count += 1
     return parsed_text
 
