@@ -1,0 +1,7 @@
+.venv/
+.idea/
+__pycache__/
+
+processed_images/
+raw_images/
+routes.xlsx
